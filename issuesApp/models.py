@@ -1,6 +1,8 @@
 import uuid
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 import datetime
+from .managers import CustomUserManager
 
 # Create your models here.
 class Agent(models.Model):
@@ -28,3 +30,20 @@ class Issue(models.Model):
     resolved = models.BooleanField(default=False)
     agent_response = models.TextField()
     reported_at = models.DateField(default=datetime.date.today)
+
+class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
+    staff_id = models.CharField(max_length=100, unique=True, default='')
+    full_name = models.CharField(max_length=100, default='')
+    region = models.CharField(max_length=100, default='')
+    ahq = models.CharField(max_length=100, default='HQ')
+    location = models.CharField(max_length=100, null=True)
+    staff_type = models.CharField(max_length=100, default='') 
+
+    objects = CustomUserManager()  
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['staff_id']
+
+    def __str__(self):
+        return self.email
